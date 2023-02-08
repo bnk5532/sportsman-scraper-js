@@ -1,7 +1,6 @@
 const PORT = 8000;
 const axios = require("axios");
 const cheerio = require("cheerio");
-const { response } = require("express");
 const express = require("express");
 
 const app = express();
@@ -13,15 +12,28 @@ axios(url).then((response) => {
   const $ = cheerio.load(html);
   const article = [];
 
+  
   $(".details", html).each(function () {
     const title = $(this).text().trim();
     const url = $(this).find("a").attr("href");
+   
+        article.push({
+          title,
+          url,
+        });
+      
+  });
 
-    article.push({
-      title,
-      url,
-    });
+  $(".displayed-price", html).each(function () {
+    const price = $(this).text().trim();
+
+        article.push({
+          price,
+        });
+      
   });
   console.log(article);
 });
+
+
 app.listen(PORT, () => console.log(`server running on PORT ${PORT}`));
